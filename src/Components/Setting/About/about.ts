@@ -54,7 +54,7 @@ const About = async (): Promise<void> => {
 	<div class="settings-about-footer">
 		<a
 			class="settings-about-link-btn"
-			href="https://github.com/kimlimjustin/xplorer"
+			href="https://github.com/YiCY-YES/simplefe"
 			target="_blank"
 			>GitHub</a
 		>
@@ -64,18 +64,7 @@ const About = async (): Promise<void> => {
 			target="_blank"
 			>Documentation</a
 		>
-		<a
-			class="settings-about-link-btn"
-			href="https://github.com/kimlimjustin/xplorer/blob/master/LICENSE"
-			target="_blank"
-			>License</a
-		>
-		<a
-			class="settings-about-link-btn"
-			href="https://github.com/kimlimjustin/xplorer/graphs/contributors"
-			target="_blank"
-			>Contributors</a
-		>
+
 	</div>
 </div>
 `;
