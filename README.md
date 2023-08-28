@@ -5,6 +5,45 @@
 <p align="center"><span><b>simplefe</b>, based on <a href="https://xplorer.space">Xplore</a> </span></p>
 
 ---
+## 开发环境
+```sh
+$ yarn tauri info
+--------------------------------------------
+--------------------------------------------
+Environment
+  › OS: Windows 10.0.22621 X64
+  › Webview2: 116.0.1938.62
+  › MSVC:
+      - Visual Studio Community 2022
+      - Visual Studio ���ɹ��� 2019
+  › Node.js: 18.17.0
+  › npm: 9.8.0
+  › pnpm: 8.6.12
+  › yarn: 1.22.19
+  › rustup: 1.26.0
+  › rustc: 1.70.0
+  › cargo: 1.70.0
+  › Rust toolchain: stable-x86_64-pc-windows-msvc
+
+Packages
+  › @tauri-apps/cli [NPM]: 1.1.1
+  › @tauri-apps/api [NPM]: 1.1.0
+  › tauri [RUST]: 1.4.1,
+  › tauri-build [RUST]: 1.4.0,
+  › tao [RUST]: 0.16.2,
+  › wry [RUST]: 0.24.3,
+
+App
+  › build-type: bundle
+  › CSP: unset
+  › distDir: ../out/src
+  › devPath: http://localhost:8080/
+  › bundler: Webpack
+```
+
+
+
+---
 
 ## Development
 
