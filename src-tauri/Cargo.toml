@@ -1,0 +1,51 @@
+[package]
+name = "app1"
+version = "0.1.0"
+description = "A Tauri App"
+default-run = "app1"
+edition = "2021"
+build = "src/build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+tauri-build = { version="1.0.0", features = [] }
+
+[dependencies]
+tokei = "12"
+sysinfo = "0.29"
+serde_json = "1"
+serde = { version = "^1.0", features = ["derive"] }
+# 包含updater会警告
+tauri = { version="1.4.1", features = ["api-all", "devtools", "macos-private-api", "window-data-url"] }
+tauri-plugin-window-state = { git = "https://github.com/YiCY-YES/plugins-workspace.git", branch = "v1" }
+open = "2"
+path-absolutize = "3"
+trash = "2"
+notify = "4"
+normpath = "0.3"
+lazy_static = "1.4"
+font-loader = "0.11"
+clap = "3.0.14"
+glob = "0.3"
+parselnk = "0.1"
+lnk = "0.5"
+url = "2.2"
+reqwest = "0.11"
+tokio = { version = "^1", features = ["macros", "parking_lot", "rt"] }
+bincode = "1.3"
+zip = "0.6.2"
+
+[target."cfg(any(target_os = \"windows\", target_os = \"macos\"))".dependencies]
+window-vibrancy = { git = "https://github.com/tauri-apps/window-vibrancy" }
+window-shadows = { git = "https://github.com/tauri-apps/window-shadows" }
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true
