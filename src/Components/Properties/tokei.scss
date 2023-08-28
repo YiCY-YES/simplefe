@@ -1,0 +1,97 @@
+#codeinfo{
+    flex:1;
+    overflow: auto;
+    padding: 0.2rem;
+    #takei{
+        display: grid;
+        grid-template-columns: 1.5fr repeat(5, 1fr);
+        overflow: auto;
+        width: 100%;
+        >div{
+            padding: 0.2rem;
+            display: block;
+            border-bottom: 1px solid #275f02;
+            border-right: 1px solid #2b6306;
+
+            div:not(.not){
+                margin: -0.3rem;
+                padding-left: 1rem;
+                background-color: rgb(6, 68, 68);
+                border-left: 0.5rem solid #d8dfdb;
+                border-right: 0.5rem solid #d8dfdb;
+            }
+        }
+        :nth-child(12n+2){
+            background-color: rgb(2, 51, 61);
+        }
+        :nth-child(12n+3){
+            background-color: rgb(2, 51, 61);
+        }
+        :nth-child(12n+4){
+            background-color: rgb(2, 51, 61);
+        }
+        :nth-child(12n+5){
+            background-color: rgb(2, 51, 61);
+        }
+        :nth-child(12n+6){
+            background-color: rgb(2, 51, 61);
+        }
+        :nth-child(6n+1){
+            background-color: rgb(1, 42, 38);
+        }
+        :nth-child(2){
+            background-color: #120125;
+        }
+        :nth-child(3){
+            background-color: #120125;
+        }
+        :nth-child(4){
+            background-color: #120125;
+        }
+        :nth-child(5){
+            background-color: #120125;
+        }
+        :nth-child(6){
+            background-color: #120125;
+        }
+        :nth-child(7){
+            background-color: #24012e;
+        }
+        :nth-child(8){
+            background-color: #24012e;
+        }
+        :nth-child(9){
+            background-color: #24012e;
+        }
+        :nth-child(10){
+            background-color: #24012e;
+        }
+        :nth-child(11){
+            background-color: #24012e;
+        }
+        :nth-child(12){
+            background-color: #24012e;
+        }
+    }
+    .loading-bar{
+        display: block;
+        height: 3rem;
+        text-align:center;
+    }
+    .spinner {
+        width: 60px;
+        height: 60px;
+        background-color: #67CF22;
+        margin: 100px auto;
+        animation: rotateplane 1.2s infinite ease-in-out;
+      }
+      @keyframes rotateplane {
+        0% {
+          transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+        } 50% {
+          transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+        } 100% {
+          transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+        }
+      }
+}

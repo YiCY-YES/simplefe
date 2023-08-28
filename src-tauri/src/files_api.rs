@@ -8,7 +8,6 @@ use normpath::PathExt;
 use notify::{raw_watcher, RawEvent, RecursiveMode, Watcher};
 use parselnk::Lnk;
 use std::convert::TryFrom;
-use std::default;
 use std::fs;
 use std::fs::File;
 use std::io::prelude::*;
@@ -24,7 +23,9 @@ use tauri::api::dialog::ask;
 #[cfg(target_os = "windows")]
 use tauri::api::path::local_data_dir;
 use zip::write::FileOptions;
-use tokei::{Config, Languages, Language,LanguageType,Report};
+use tokei::{Config, Languages};
+use std::collections::HashMap;
+
 
 #[derive(serde::Serialize, Clone, Debug)]
 pub struct LnkData {
@@ -94,25 +95,33 @@ pub struct ReturnInformation {
     pub request_confirmation: bool,
 }
 
-#[derive(serde::Serialize)]
-pub struct ChildrenL{
+#[derive(serde::Serialize,Default)]
+pub struct Detail{
     pub language_type:String,
-    pub rep:Vec<InnerReport>,
+    pub blanks:usize,
+    pub code:usize,
+    pub comments:usize,
+    pub files:usize,
+    pub lines:usize,
+    pub children:Vec<InnerReport>,
 }
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize,Default)]
 pub struct InnerReport{
     pub language_type:String,
-    pub blanks:i64,
-    pub code:i64,
-    pub comments:i64,
-    pub files:i64,
+    pub blanks:usize,
+    pub code:usize,
+    pub comments:usize,
+    pub files:usize,
+    pub lines:usize,
 }
 #[derive(serde::Serialize)]
 pub struct LanguageInfo{
-    pub blanks:i64,
-    pub code:i64,
-    pub comments:i64,
-    pub children : Vec<ChildrenL>,
+    pub blanks:usize,
+    pub code:usize,
+    pub comments:usize,
+    pub files:usize,
+    pub lines:usize,
+    pub types : Vec<Detail>,
 }
 
 
@@ -395,20 +404,20 @@ pub async fn read_directory(dir: &Path) -> Result<FolderInformation, String> {
                                 }
                             }
                             None => {
-                                println!(
-                                    "linkinfo{:?}local_base_path{:?},,,,,,,common_path_suffix{:?}",
-                                    somelnk.link_info,
-                                    somelnk.link_info.local_base_path_unicode.as_ref(),
-                                    somelnk.link_info.common_path_suffix.as_ref()
-                                );
+                                // println!(
+                                //     "linkinfo{:?}local_base_path{:?},,,,,,,common_path_suffix{:?}",
+                                //     somelnk.link_info,
+                                //     somelnk.link_info.local_base_path_unicode.as_ref(),
+                                //     somelnk.link_info.common_path_suffix.as_ref()
+                                // );
                                 let lnkobj = ShellLink::open(path).unwrap();
                                 // println!("{:?}",lnkobj);
                                 // print!("{:?}",somelnk);
                                 let mut pathstr = lnkobj.link_info().as_ref().unwrap().local_base_path().as_ref().unwrap().clone();
-                                println!("{pathstr}");
+                                // println!("{pathstr}");
                                 let s = "".to_string();
                                 let mut r_p_s =lnkobj.relative_path().as_ref().unwrap_or_else(||&s).clone();
-                                println!("{r_p_s}");
+                                // println!("{r_p_s}");
                                 if  let Some(a) = r_p_s.rfind("\\"){
                                     r_p_s.replace_range(..a, "");
                                 };
@@ -420,9 +429,6 @@ pub async fn read_directory(dir: &Path) -> Result<FolderInformation, String> {
 
                                 }
                         };
-                        println!("395~~~~~~{icon}");
-                        println!("395~~~~~~{file_path}");
-
                         lnk_files.push(LnkData { file_path, icon });
                         files.push(file_info)
                     } else {
@@ -993,7 +999,7 @@ pub async fn decompress_from_zip(zip_path: String, target_dir: String) {
 }
 
 #[tauri::command]
-pub async fn get_tokei(path: String) -> Language{
+pub async fn get_tokei(path: String) -> LanguageInfo{
     let paths = &[path];
     // Exclude any path that contains any of these strings.
     let excluded = &[".git"];
@@ -1002,8 +1008,55 @@ pub async fn get_tokei(path: String) -> Language{
 
     let mut languages = Languages::new();
     languages.get_statistics(paths, excluded, &config);
-    let result = languages.total();
-    println!("{:?}",&result);
-
-    result
+    let  result = languages.total();
+    let mut tokeitotal  = LanguageInfo{
+        blanks :result.blanks,
+        code:result.code,
+        comments:result.comments,
+        files:0,
+        lines:0,
+        types : Default::default(),
+    };
+    tokeitotal.lines = result.blanks+result.code+result.comments;
+    // 遍历语言
+    for (t,r) in &result.children{
+        let mut rpt_v:HashMap<String,InnerReport>= HashMap::new();
+        let mut blanks = 0;
+        let mut code = 0;
+        let mut comments = 0;
+        let mut langfiles = 0;
+        // 遍历文件
+        for rpt in r{
+            // 遍历子语言
+            for (l_t,c_s) in &rpt.stats.blobs{
+                let i_l_type = &String::from(l_t.name());
+                if let Some(oldstate) =rpt_v.get(i_l_type){
+                    let mut newstate = InnerReport::default();
+                    newstate.language_type = oldstate.language_type.clone();
+                    newstate.blanks = oldstate.blanks + c_s.blanks;
+                    newstate.code = oldstate.code + c_s.code;
+                    newstate.comments = oldstate.comments + c_s.comments;
+                    newstate.files = oldstate.files + 1;
+                    newstate.lines = c_s.blanks+ c_s.code + c_s.comments;
+                    rpt_v.insert(i_l_type.clone(), newstate);
+                }else{
+                    let n = c_s.blanks+c_s.comments+c_s.code;
+                    rpt_v.insert(i_l_type.clone(), InnerReport
+                        { language_type: i_l_type.clone(), blanks: c_s.blanks, code: c_s.code, comments: c_s.comments,lines:n, files: 1 });
+                };
+            }
+            blanks =blanks + rpt.stats.blanks;
+            code = code + rpt.stats.code;
+            comments = comments + rpt.stats.comments;
+            langfiles = langfiles + 1;
+        }
+        let onelang = Detail{
+            language_type : String::from(t.name()),
+            children :rpt_v.into_values().collect(),
+            blanks,code,comments,files:langfiles,
+            lines:blanks+code+comments};
+        tokeitotal.types.push(onelang);
+        tokeitotal.files = tokeitotal.files + langfiles;
+    }
+    tokeitotal
 }

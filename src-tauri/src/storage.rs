@@ -12,7 +12,6 @@ pub struct StorageData {
 #[tauri::command]
 pub fn write_data(key: &str, value: serde_json::Value) {
     let storage_dir = Path::new(&local_data_dir().unwrap()).join("Xplorer");
-    println!("storage.js-----{:?}", storage_dir);
     if let Err(e) = fs::create_dir_all(&storage_dir) {
         eprintln!("Failed to create dirs: {:?}", e);
     }

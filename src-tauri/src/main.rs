@@ -16,9 +16,9 @@ use font_loader::system_fonts;
 use lazy_static::lazy_static;
 use std::env;
 use std::sync::Arc;
-use std::time::Duration;
+// use std::time::Duration;
 use tokio::sync::Mutex;
-use tokio::time::timeout;
+// use tokio::time::timeout;
 
 #[cfg(target_os = "windows")]
 use std::os::windows::process::CommandExt;
@@ -135,9 +135,9 @@ async fn set_preview(s: String, p: String) -> Result<bool, String> {
     // let _ = timeout(Duration::from_secs(10), no_preview()).await;
     Ok(*NEEDPREVIEW.lock().await)
 }
-async fn no_preview() {
-    *NEEDPREVIEW.lock().await = false;
-}
+// async fn no_preview() {
+//     *NEEDPREVIEW.lock().await = false;
+// }
 
 #[tauri::command]
 #[inline]

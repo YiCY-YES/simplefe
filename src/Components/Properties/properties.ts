@@ -35,7 +35,11 @@ const RenderProperties = (options: Record<string, unknown>) => {
  */
 const Properties = async (filePath: string): Promise<void> => {
 	const fileElement = document.querySelector<HTMLElement>(`[data-path="${encodeURI(filePath)}"]`);
-
+	const PROPERTIES_ELEMENT = document.querySelector<HTMLElement>('.properties');
+    const path = document.createElement("span");
+    path.innerHTML=filePath;
+    PROPERTIES_ELEMENT.querySelector(".properties-heading-title").innerHTML="Properties";
+    PROPERTIES_ELEMENT.querySelector(".properties-heading-title").appendChild(path);
 	let size, createdAt, modifiedAt, accessedAt, fileType, isHidden, isSystem, isReadonly;
 
 	if (fileElement.classList.contains('file')) {

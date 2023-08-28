@@ -1,5 +1,5 @@
 import { getTauriVersion } from '@tauri-apps/api/app';
-import { version, description } from '../../../../package.json';
+import config from '../../../../package.json';
 import { os } from '@tauri-apps/api';
 
 // Copy text into clipboard
@@ -21,15 +21,15 @@ const About = async (): Promise<void> => {
 	<div class="settings-about-header">
 		<img src="${await require('../../../Icon/icon.png')}" />
 		<h1>simplefe</h1>
-		<span class="settings-about-caption">${description}</span>
+		<span class="settings-about-caption">${config.description}</span>
 	</div>
 	<div class="settings-about-content">
 		<ul>
 			<li>
-				<span>Version: </span><span>${version}</span
+				<span>Version: </span><span>${config.version}</span
 				><span
 					data-tooltip="Copy"
-					onClick="${copyToClipboard('Version: ' + version)}"
+					onClick="${copyToClipboard('Version: ' + config.version)}"
 					>&#x2398;</span
 				>
 			</li>

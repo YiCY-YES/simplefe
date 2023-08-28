@@ -20,11 +20,9 @@ import { Resizer } from './Components/Layout/resizer';
 import { MAIN_BOX_ELEMENT } from './Util/constants';
 import FileAPI from './Service/files';
 
-import { arch } from '@tauri-apps/api/os';
 import { invoke } from '@tauri-apps/api';
 import { eURLify, URLify } from './Components/Functions/urlify';
 
-import { message } from '@tauri-apps/api/dialog';
 // Wait DOM Loaded to be loaded
 interface PreviewStc {
 	s: string;
@@ -168,6 +166,4 @@ document.addEventListener('DOMContentLoaded', async () => {
 		await Storage.get('extensions', true);
 		updateTheme('*');
 	});
-	const archName = await arch();
-	console.log(archName);
 });
