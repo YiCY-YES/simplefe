@@ -42,7 +42,6 @@ $ yarn dev
 
 ## LICENSE
 
-[Apache-2.0](https://github.com/YiCY-YES/simplefe/blob/trunk/LICENSE)
+[Apache-2.0](https://apache.org/licenses/LICENSE-2.0)
 
 ---
-
