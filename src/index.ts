@@ -19,7 +19,6 @@ import { listenUpdateTheme } from './Service/window';
 import { Resizer } from './Components/Layout/resizer';
 import { MAIN_BOX_ELEMENT } from './Util/constants';
 import FileAPI from './Service/files';
-
 import { invoke } from '@tauri-apps/api';
 import { eURLify, URLify } from './Components/Functions/urlify';
 

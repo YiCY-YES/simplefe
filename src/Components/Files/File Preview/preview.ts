@@ -48,39 +48,37 @@ const Preview = async (filePath: string): Promise<void> => {
 	const previewElement = document.createElement('div');
 	previewElement.classList.add('preview');
 
-    const randomID = () =>{
-        return Math.random().toString().replace('.', '');
-    }
+	const randomID = () => {
+		return Math.random().toString().replace('.', '');
+	};
 	const changePreview = async (html: string) => {
 		if (!html) return;
 		previewElement.innerHTML = `
                 <div class="preview-header">
                     <span class="preview-path">${getBasename(filePath)}</span>
-                    <span class="preview-exit-btn">&times;</span>
+
                 </div>
                 ${html}
                 `;
 
 		document.querySelector<HTMLElement>('.main-box').scrollTop = 0;
-		invoke('set_preview', { s: previewElement.innerHTML, p: filePath }).then(() =>
-            new WebviewWindow(randomID()));
+		invoke('set_preview', { s: previewElement.innerHTML, p: filePath }).then(() => new WebviewWindow(randomID()));
 		// document.querySelector<HTMLElement>('.main-box').style.overflowY = 'hidden';
 		// GET_WORKSPACE_ELEMENT(1).classList.toggle('workspace-split');
 		// GET_WORKSPACE_ELEMENT(1).appendChild(previewElement);
 		// previewElement.querySelector('.preview-exit-btn').addEventListener('click', () => closePreviewFile());
 		return;
 	};
-    // 直接打开PDF文件convertFileSrc
+	// 直接打开PDF文件convertFileSrc
 	const changePDFPreview = (html: string) => {
 		if (!html) return;
 		new WebviewWindow(randomID(), { url: html });
 	};
-    // 由新窗口index处理文档
-    const changeDOCPreview = ()=>{
-		invoke('set_preview', { s: "", p: filePath }).then(() =>
-        new WebviewWindow(randomID()));
-        return;
-    }
+	// 由新窗口处理文档
+	const changeDOCPreview = () => {
+		invoke('set_preview', { s: '', p: filePath }).then(() => new WebviewWindow(randomID()));
+		return;
+	};
 	const ext = filePath.split('.').pop().toLowerCase();
 
 	let previewed = true;
@@ -97,7 +95,7 @@ const Preview = async (filePath: string): Promise<void> => {
 		// convertToHtml({ arrayBuffer: buf }).then((result: { value: string }) => {
 		// 	changePreview(`<div class='preview-object' data-type="docx">${eURLify(result.value)}</div>`);
 		// });
-        changeDOCPreview();
+		changeDOCPreview();
 	} else if (['xlsx', 'xls', 'xlsb', 'xls', 'ods', 'fods', 'csv'].indexOf(ext) !== -1) {
 		const xlsxData = xlsx.read(await new FileAPI(filePath).readBuffer(), { type: 'buffer' });
 		const parsedData = xlsx.utils.sheet_to_html(xlsxData.Sheets[xlsxData.SheetNames[0]]);
@@ -112,7 +110,7 @@ const Preview = async (filePath: string): Promise<void> => {
 		);
 	} else if (AUDIO_TYPES.indexOf(ext) !== -1) {
 		changePreview(
-			`	
+			`
 			<div class="preview-object" data-type="audio">
 				<audio controls="" controlsList="nodownload">
 					<source src="${new FileAPI(filePath).readAsset()}">

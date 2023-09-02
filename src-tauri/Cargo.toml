@@ -17,7 +17,7 @@ sysinfo = "0.29"
 serde_json = "1"
 serde = { version = "^1.0", features = ["derive"] }
 # 包含updater会警告
-tauri = { version="1.4.1", features = ["api-all", "devtools", "macos-private-api", "window-data-url"] }
+tauri = { version="1.4.1", features = ["api-all", "macos-private-api", "window-data-url"] }
 tauri-plugin-window-state = { git = "https://github.com/YiCY-YES/plugins-workspace.git", branch = "v1" }
 open = "2"
 path-absolutize = "3"

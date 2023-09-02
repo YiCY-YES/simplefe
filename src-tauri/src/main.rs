@@ -9,7 +9,6 @@ mod file_lib;
 mod files_api;
 mod storage;
 mod utils;
-
 use clap::{Arg, ArgMatches, Command as ClapCommand};
 mod tests;
 use font_loader::system_fonts;
@@ -19,7 +18,6 @@ use std::sync::Arc;
 // use std::time::Duration;
 use tokio::sync::Mutex;
 // use tokio::time::timeout;
-
 #[cfg(target_os = "windows")]
 use std::os::windows::process::CommandExt;
 use std::process::Command;

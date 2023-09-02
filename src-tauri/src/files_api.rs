@@ -7,6 +7,7 @@ use lnk::ShellLink;
 use normpath::PathExt;
 use notify::{raw_watcher, RawEvent, RecursiveMode, Watcher};
 use parselnk::Lnk;
+use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fs;
 use std::fs::File;
@@ -22,10 +23,8 @@ use std::time::SystemTime;
 use tauri::api::dialog::ask;
 #[cfg(target_os = "windows")]
 use tauri::api::path::local_data_dir;
-use zip::write::FileOptions;
 use tokei::{Config, Languages};
-use std::collections::HashMap;
-
+use zip::write::FileOptions;
 
 #[derive(serde::Serialize, Clone, Debug)]
 pub struct LnkData {
@@ -95,35 +94,34 @@ pub struct ReturnInformation {
     pub request_confirmation: bool,
 }
 
-#[derive(serde::Serialize,Default)]
-pub struct Detail{
-    pub language_type:String,
-    pub blanks:usize,
-    pub code:usize,
-    pub comments:usize,
-    pub files:usize,
-    pub lines:usize,
-    pub children:Vec<InnerReport>,
+#[derive(serde::Serialize, Default)]
+pub struct Detail {
+    pub language_type: String,
+    pub blanks: usize,
+    pub code: usize,
+    pub comments: usize,
+    pub files: usize,
+    pub lines: usize,
+    pub children: Vec<InnerReport>,
 }
-#[derive(serde::Serialize,Default)]
-pub struct InnerReport{
-    pub language_type:String,
-    pub blanks:usize,
-    pub code:usize,
-    pub comments:usize,
-    pub files:usize,
-    pub lines:usize,
+#[derive(serde::Serialize, Default)]
+pub struct InnerReport {
+    pub language_type: String,
+    pub blanks: usize,
+    pub code: usize,
+    pub comments: usize,
+    pub files: usize,
+    pub lines: usize,
 }
 #[derive(serde::Serialize)]
-pub struct LanguageInfo{
-    pub blanks:usize,
-    pub code:usize,
-    pub comments:usize,
-    pub files:usize,
-    pub lines:usize,
-    pub types : Vec<Detail>,
+pub struct LanguageInfo {
+    pub blanks: usize,
+    pub code: usize,
+    pub comments: usize,
+    pub files: usize,
+    pub lines: usize,
+    pub types: Vec<Detail>,
 }
-
 
 pub struct FileSystemUtils;
 
@@ -239,11 +237,7 @@ pub async fn get_file_properties(file_path: &str) -> Result<FileMetaData, String
         file_lib::get_type(&basename, is_dir).await
     };
 
-    let size = if is_dir {
-       0
-    } else {
-        metadata.len()
-    };
+    let size = if is_dir { 0 } else { metadata.len() };
 
     Ok(FileMetaData {
         is_system,
@@ -394,7 +388,7 @@ pub async fn read_directory(dir: &Path) -> Result<FolderInformation, String> {
                     if let Ok(somelnk) = Lnk::try_from(path) {
                         let icon = match somelnk.string_data.icon_location {
                             Some(icon) => {
-                                println!("BUG_icon{:?}end BUG_icon",&icon);
+                                println!("BUG_icon{:?}end BUG_icon", &icon);
                                 let icon = icon.as_path().to_string_lossy().to_string();
                                 let icon_type = file_lib::get_type(&icon, false).await;
                                 match icon_type.as_str() {
@@ -413,27 +407,40 @@ pub async fn read_directory(dir: &Path) -> Result<FolderInformation, String> {
                                 let lnkobj = ShellLink::open(path).unwrap();
                                 // println!("{:?}",lnkobj);
                                 // print!("{:?}",somelnk);
-                                let mut pathstr = lnkobj.link_info().as_ref().unwrap().local_base_path().as_ref().unwrap().clone();
+                                let mut pathstr = lnkobj
+                                    .link_info()
+                                    .as_ref()
+                                    .unwrap()
+                                    .local_base_path()
+                                    .as_ref()
+                                    .unwrap()
+                                    .clone();
                                 // println!("{pathstr}");
                                 let s = "".to_string();
-                                let mut r_p_s =lnkobj.relative_path().as_ref().unwrap_or_else(||&s).clone();
+                                let mut r_p_s = lnkobj
+                                    .relative_path()
+                                    .as_ref()
+                                    .unwrap_or_else(|| &s)
+                                    .clone();
                                 // println!("{r_p_s}");
-                                if  let Some(a) = r_p_s.rfind("\\"){
+                                if let Some(a) = r_p_s.rfind("\\") {
                                     r_p_s.replace_range(..a, "");
                                 };
-                                if let Some(b) = pathstr.rfind("\\"){
+                                if let Some(b) = pathstr.rfind("\\") {
                                     pathstr.truncate(b);
                                     pathstr.push_str(&r_p_s);
                                 };
-                                somelnk.link_info. local_base_path.unwrap_or_else(||{pathstr}).to_string()
-
-                                }
+                                somelnk
+                                    .link_info
+                                    .local_base_path
+                                    .unwrap_or_else(|| pathstr)
+                                    .to_string()
+                            }
                         };
                         lnk_files.push(LnkData { file_path, icon });
                         files.push(file_info)
                     } else {
-                        println!("BUG_err lnk{:?}end err lnk",path);
-
+                        println!("BUG_err lnk{:?}end err lnk", path);
                     }
                 } else {
                     files.push(file_info)
@@ -532,10 +539,7 @@ pub fn open_in_terminal(folder_path: &str) {
     println!("{folder_path}");
     #[cfg(target_os = "windows")]
     Command::new("wt")
-        .args([
-            "-d",
-            folder_path,
-        ])
+        .args(["-d", folder_path])
         .creation_flags(0x08000000)
         .output()
         .expect("failed to execute process");
@@ -882,15 +886,15 @@ pub async fn search_in_dir(
                 "~/**/".to_string() + &pattern
             }
         }
-        //
-        _ => {if pattern.find("*").is_some() || pattern.find("?").is_some() || pattern.find("[").is_some() ||pattern.find("]").is_some()
-        {
+        _ => {
             format!("{dir_path}/**/{pattern}")
-        }else{
-            format!("{dir_path}/**/*{pattern}*")
-        }}
+        }
     };
-    let glob_option = MatchOptions::default();
+    let glob_option = MatchOptions {
+        case_sensitive: true,
+        require_literal_separator: false,
+        require_literal_leading_dot: false
+    };
     let continue_search = std::sync::Arc::new(std::sync::Mutex::new(true));
     let id = window.listen("unsearch", {
         let continue_search = continue_search.clone();
@@ -899,6 +903,7 @@ pub async fn search_in_dir(
         }
     });
     let mut files = Vec::new();
+    println!("{}", glob_pattern);
     let glob_result = glob_with(&glob_pattern, glob_option).unwrap();
 
     for entry in glob_result {
@@ -906,7 +911,7 @@ pub async fn search_in_dir(
             match entry {
                 Ok(path) => {
                     files.push(get_file_properties(path.to_str().unwrap()).await.unwrap());
-                    if files.len() % 200 == 0 {
+                    if files.len() % 100 == 0 {
                         window.emit("search_partial_result", files.clone()).unwrap();
 
                         files.clear();
@@ -999,7 +1004,7 @@ pub async fn decompress_from_zip(zip_path: String, target_dir: String) {
 }
 
 #[tauri::command]
-pub async fn get_tokei(path: String) -> LanguageInfo{
+pub async fn get_tokei(path: String) -> LanguageInfo {
     let paths = &[path];
     // Exclude any path that contains any of these strings.
     let excluded = &[".git"];
@@ -1008,53 +1013,66 @@ pub async fn get_tokei(path: String) -> LanguageInfo{
 
     let mut languages = Languages::new();
     languages.get_statistics(paths, excluded, &config);
-    let  result = languages.total();
-    let mut tokeitotal  = LanguageInfo{
-        blanks :result.blanks,
-        code:result.code,
-        comments:result.comments,
-        files:0,
-        lines:0,
-        types : Default::default(),
+    let result = languages.total();
+    let mut tokeitotal = LanguageInfo {
+        blanks: result.blanks,
+        code: result.code,
+        comments: result.comments,
+        files: 0,
+        lines: 0,
+        types: Default::default(),
     };
-    tokeitotal.lines = result.blanks+result.code+result.comments;
+    tokeitotal.lines = result.blanks + result.code + result.comments;
     // 遍历语言
-    for (t,r) in &result.children{
-        let mut rpt_v:HashMap<String,InnerReport>= HashMap::new();
+    for (t, r) in &result.children {
+        let mut rpt_v: HashMap<String, InnerReport> = HashMap::new();
         let mut blanks = 0;
         let mut code = 0;
         let mut comments = 0;
         let mut langfiles = 0;
         // 遍历文件
-        for rpt in r{
+        for rpt in r {
             // 遍历子语言
-            for (l_t,c_s) in &rpt.stats.blobs{
+            for (l_t, c_s) in &rpt.stats.blobs {
                 let i_l_type = &String::from(l_t.name());
-                if let Some(oldstate) =rpt_v.get(i_l_type){
+                if let Some(oldstate) = rpt_v.get(i_l_type) {
                     let mut newstate = InnerReport::default();
                     newstate.language_type = oldstate.language_type.clone();
                     newstate.blanks = oldstate.blanks + c_s.blanks;
                     newstate.code = oldstate.code + c_s.code;
                     newstate.comments = oldstate.comments + c_s.comments;
                     newstate.files = oldstate.files + 1;
-                    newstate.lines = c_s.blanks+ c_s.code + c_s.comments;
+                    newstate.lines = c_s.blanks + c_s.code + c_s.comments;
                     rpt_v.insert(i_l_type.clone(), newstate);
-                }else{
-                    let n = c_s.blanks+c_s.comments+c_s.code;
-                    rpt_v.insert(i_l_type.clone(), InnerReport
-                        { language_type: i_l_type.clone(), blanks: c_s.blanks, code: c_s.code, comments: c_s.comments,lines:n, files: 1 });
+                } else {
+                    let n = c_s.blanks + c_s.comments + c_s.code;
+                    rpt_v.insert(
+                        i_l_type.clone(),
+                        InnerReport {
+                            language_type: i_l_type.clone(),
+                            blanks: c_s.blanks,
+                            code: c_s.code,
+                            comments: c_s.comments,
+                            lines: n,
+                            files: 1,
+                        },
+                    );
                 };
             }
-            blanks =blanks + rpt.stats.blanks;
+            blanks = blanks + rpt.stats.blanks;
             code = code + rpt.stats.code;
             comments = comments + rpt.stats.comments;
             langfiles = langfiles + 1;
         }
-        let onelang = Detail{
-            language_type : String::from(t.name()),
-            children :rpt_v.into_values().collect(),
-            blanks,code,comments,files:langfiles,
-            lines:blanks+code+comments};
+        let onelang = Detail {
+            language_type: String::from(t.name()),
+            children: rpt_v.into_values().collect(),
+            blanks,
+            code,
+            comments,
+            files: langfiles,
+            lines: blanks + code + comments,
+        };
         tokeitotal.types.push(onelang);
         tokeitotal.files = tokeitotal.files + langfiles;
     }

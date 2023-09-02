@@ -4,8 +4,10 @@
 
 <p align="center"><span><b>simplefe</b>, based on <a href="https://xplorer.space">Xplore</a> </span></p>
 
----
+## 建议使用暗色主题外观，浅色外观有些前景色未设置为深色
+
 ## 开发环境
+
 ```sh
 $ yarn tauri info
 --------------------------------------------
@@ -40,8 +42,6 @@ App
   › devPath: http://localhost:8080/
   › bundler: Webpack
 ```
-
-
 
 ---
 

@@ -154,34 +154,8 @@ const Appearance = async (): Promise<void> => {
 		<option value="os" ${frameStyle === 'os' ? 'selected' : ''} ${disabledForWeb}>${systemDefault_i18n}</option>
 	</select>
 	<h3 class="settings-title">${filePreview_i18n}</h3>
-	<div class="toggle-box">
-		<label class="toggle">
-			<input type="checkbox" name="preview-video" ${videoAsThumbnail ? 'checked' : ''}>
-			<span class="toggle-slider"></span>
-			<span class="toggle-label">${videoAsThumbnail_i18n}</span>
-		</label>
-	</div>
-	<div class="toggle-box">
-		<label class="toggle">
-			<input type="checkbox" name="preview-image-on-hover" ${previewImageOnHover ? 'checked' : ''}>
-			<span class="toggle-slider"></span>
-			<span class="toggle-label">${previewImageOnHover_i18n}</span>
-		</label>
-	</div>
-	${
-		platform === 'win32'
-			? `
-				<div class="toggle-box">
-					<label class="toggle">
-						<input type="checkbox" name="extract-exe-icon" ${extractExeIcon ? 'checked' : ''}>
-						<span class="toggle-slider"></span>
-						<span class="toggle-label">${extractExeIcon_i18n}</span>
-					</label>
-				</div>
-				`
-			: ''
-	}
-	<h3 class="settings-title">${imageAsThumbnail_i18n}</h3>	
+	
+	<h3 class="settings-title">${imageAsThumbnail_i18n}</h3>
 	<select name="imageAsThumbnail">
 		<option ${imageAsThumbnail === 'no' ? 'selected' : ''} value="no">${disabled_i18n}</option>
 		<option ${imageAsThumbnail === 'smalldir' ? 'selected' : ''} value="smalldir">${forSmallDirectory_i18n}</option>
