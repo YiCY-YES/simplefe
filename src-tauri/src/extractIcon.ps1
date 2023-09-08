@@ -16,5 +16,7 @@ if ($fileExists -and $filePath.EndsWith(".lnk")) {
 
 if ($fileExists) {
     $icon = [System.Drawing.Icon]::ExtractAssociatedIcon($filePath);
-    $icon.ToBitmap().save($target, [System.Drawing.Imaging.ImageFormat]::Png); 
+    $icon.ToBitmap().save($target, [System.Drawing.Imaging.ImageFormat]::Png);
 }
+
+# $sh.CreateShortcut("E:\新建文件夹 - 快捷方式.lnk").TargetPath

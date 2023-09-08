@@ -104,6 +104,7 @@ pub struct Detail {
     pub lines: usize,
     pub children: Vec<InnerReport>,
 }
+#[derive(Debug)]
 #[derive(serde::Serialize, Default)]
 pub struct InnerReport {
     pub language_type: String,

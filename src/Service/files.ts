@@ -29,7 +29,8 @@ class FileAPI {
 			if (typeof this.fileName === 'string') {
 				if (isTauri) {
 					const { fs } = require('@tauri-apps/api');
-					fs.readTextFile(this.fileName).then((fileContent: string) => resolve(fileContent));
+					fs.readTextFile(this.fileName).then((fileContent: string) => resolve(fileContent),
+                    ()=>{reject("sorry,can not read")});
 				} else {
 					reject('Read file is currently not supported on web version');
 				}

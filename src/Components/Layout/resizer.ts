@@ -17,8 +17,8 @@ export const updateSidebarParameters = (updateSidebar = false) => {
 	const sidebarDefaultExpandedSizeOld = sidebarDefaultExpandedSize;
 	const sidebarMinSizeOld = sidebarMinSize;
 	sidebarMinSize = fontSize * 4;
-	sidebarMinSnap = 180 + fontSize * 4;
-	sidebarDefaultExpandedSize = 200 + fontSize * 4;
+	sidebarMinSnap = 100 + fontSize * 4;
+	sidebarDefaultExpandedSize = 120 + fontSize * 4;
 	if (!updateSidebar) return;
 
 	let size = parseInt(appearance.expandedSidebarWidth);
@@ -120,11 +120,10 @@ export const Resizer = async (): Promise<void> => {
 		}
 	});
 	document.querySelector(`#xplorer-brand`).addEventListener('click', () => {
-        if (document.querySelector(".sidebar-minimized") != null){
-		resizeSidebar(sidebarMinSnap + 'px');}else{
-            resizeSidebar(sidebarMinSize + 'px');
-
-        }
+		if (document.querySelector('.sidebar-minimized') != null) {
+			resizeSidebar(sidebarMinSnap + 'px');
+		} else {
+			resizeSidebar(sidebarMinSize + 'px');
+		}
 	});
-
 };

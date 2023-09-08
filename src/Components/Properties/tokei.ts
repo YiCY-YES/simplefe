@@ -52,6 +52,9 @@ const render = (data: LanguageInfo) => {
 		}
 	}
 	PROPERTIES_ELEMENT.innerHTML = renderRow(a) + renderRow(b) + renderRow(c);
+	performance.mark('finishTokei');
+	const marktime = performance.getEntriesByType('mark');
+	console.info('tokei处理时间：' + (marktime[marktime.length - 1].startTime - marktime[marktime.length - 2].startTime) + '毫秒');
 };
 function renderRow(args: Row): string {
 	const result = document.createElement('div');
@@ -68,6 +71,7 @@ function renderRow(args: Row): string {
  * @returns {Promise<Language>} Result
  */
 const tokei = async (filePath: string): Promise<LanguageInfo> => {
+	performance.mark('startTokei');
 	const PROPERTIES_ELEMENT = document.querySelector<HTMLElement>('#codeinfo');
 	PROPERTIES_ELEMENT.style.display = 'block';
 	PROPERTIES_ELEMENT.querySelector<HTMLElement>('#tokei').style.display = 'none';

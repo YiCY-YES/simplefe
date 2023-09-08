@@ -92,11 +92,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 			if (message.p === '') {
 				updateContent(message.s);
 			} else if (message.s === '') {
+                performance.mark('start');
 				updateContent(`<h1 class="loading-bar">loading</h1><div class="spinner"></div>`);
 				const { convertToHtml } = require('./Components/Files/File Preview/mammoth.browser.min.js');
 				const buf = await new FileAPI(message.p).readBuffer();
 				convertToHtml({ arrayBuffer: buf }).then((result: { value: string }) => {
 					updateContent(`<div class='preview-object' data-type="docx">${eURLify(result.value)}</div>`);
+                    performance.mark('finish');
+                    const marktime = performance.getEntriesByType('mark');
+                    console.info('文件处理时间：' + (marktime[marktime.length - 1].startTime - marktime[marktime.length - 2].startTime) + '毫秒');
 				});
 			} else {
 				//其他类型文件

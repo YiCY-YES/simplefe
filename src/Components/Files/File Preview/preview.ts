@@ -5,7 +5,6 @@ import xlsx from 'xlsx';
 import FileAPI from '../../../Service/files';
 import { eURLify, URLify } from '../../Functions/urlify';
 import hljs from 'highlight.js';
-import ConfirmDialog from '../../Prompt/confirm';
 import { marked } from 'marked';
 import getDirname from '../../Functions/path/dirname';
 import isTauri from '../../../Util/is-tauri';
@@ -13,6 +12,8 @@ import { GET_WORKSPACE_ELEMENT } from '../../../Util/constants';
 import { startLoading, stopLoading } from '../../Functions/Loading/loading';
 import { WebviewWindow } from '@tauri-apps/api/window';
 import { invoke } from '@tauri-apps/api';
+import { message } from '@tauri-apps/api/dialog';
+import { resolve } from '@tauri-apps/api/path';
 
 const isValidURL = (text: string) => {
 	let url;
@@ -62,7 +63,7 @@ const Preview = async (filePath: string): Promise<void> => {
                 `;
 
 		document.querySelector<HTMLElement>('.main-box').scrollTop = 0;
-		invoke('set_preview', { s: previewElement.innerHTML, p: filePath }).then(() => new WebviewWindow(randomID()));
+		invoke('set_preview', { s: previewElement.outerHTML, p: filePath }).then(() => new WebviewWindow(randomID()));
 		// document.querySelector<HTMLElement>('.main-box').style.overflowY = 'hidden';
 		// GET_WORKSPACE_ELEMENT(1).classList.toggle('workspace-split');
 		// GET_WORKSPACE_ELEMENT(1).appendChild(previewElement);
@@ -143,20 +144,17 @@ const Preview = async (filePath: string): Promise<void> => {
 			const property = await fileData.properties();
 			let highlight = true;
 			if (property.size > 1024 * 100) {
-				const confirm = await ConfirmDialog(
-					'File too large',
-					'File size is larger than 100kb, proceeding previewing file might crashes simplefe, do you want to proceed?',
-					'Yes'
-				);
-				if (!confirm) {
-					stopLoading();
-					return;
-				}
+				await message('此文件类型不支持预览', 'simplefe');
+				stopLoading();
+				return;
 			}
 			if (property.size > 1024 * 10) {
 				highlight = false;
 			}
-			const fileText = await fileData.readFile();
+			const fileText = await fileData.readFile().then((s)=>{return s},async () => {
+				stopLoading();
+				throw "error" ;
+			});
 			const highlightedCode = hljs.highlightAuto(fileText).value;
 
 			changePreview(
