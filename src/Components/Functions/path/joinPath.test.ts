@@ -21,4 +21,12 @@ describe('joinPath.default', () => {
 		const result = joinPath.default('C:\\\\path\\to\\folder\\', 'myfile');
 		expect(result).toBe('C:\\\\path\\to\\folder\\myfile');
 	});
+	test('4', () => {
+		const result = joinPath.default('/path/to/file', 'hello', 'world');
+		expect(result).toBe('/path/to/file/hello/world');
+	});
+	test('5', () => {
+		const result = joinPath.default('C:\\\\path\\to\\folder\\', 'myfile', 'hello');
+		expect(result).toBe('C:\\\\path\\to\\folder\\myfile\\hello');
+	});
 });

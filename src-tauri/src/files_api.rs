@@ -2,7 +2,6 @@ use crate::extensions;
 use crate::file_lib;
 use crate::storage;
 use glob::{glob_with, MatchOptions};
-use lnk::ShellLink;
 #[cfg(not(target_os = "macos"))]
 use normpath::PathExt;
 use notify::{raw_watcher, RawEvent, RecursiveMode, Watcher};
@@ -399,43 +398,44 @@ pub async fn read_directory(dir: &Path) -> Result<FolderInformation, String> {
                                 }
                             }
                             None => {
+                                String::from("")
                                 // println!(
                                 //     "linkinfo{:?}local_base_path{:?},,,,,,,common_path_suffix{:?}",
                                 //     somelnk.link_info,
                                 //     somelnk.link_info.local_base_path_unicode.as_ref(),
                                 //     somelnk.link_info.common_path_suffix.as_ref()
                                 // );
-                                let lnkobj = ShellLink::open(path).unwrap();
+                                // let lnkobj = ShellLink::open(path).unwrap();
                                 // println!("{:?}",lnkobj);
                                 // print!("{:?}",somelnk);
-                                let mut pathstr = lnkobj
-                                    .link_info()
-                                    .as_ref()
-                                    .unwrap()
-                                    .local_base_path()
-                                    .as_ref()
-                                    .unwrap()
-                                    .clone();
-                                // println!("{pathstr}");
-                                let s = "".to_string();
-                                let mut r_p_s = lnkobj
-                                    .relative_path()
-                                    .as_ref()
-                                    .unwrap_or_else(|| &s)
-                                    .clone();
-                                // println!("{r_p_s}");
-                                if let Some(a) = r_p_s.rfind("\\") {
-                                    r_p_s.replace_range(..a, "");
-                                };
-                                if let Some(b) = pathstr.rfind("\\") {
-                                    pathstr.truncate(b);
-                                    pathstr.push_str(&r_p_s);
-                                };
-                                somelnk
-                                    .link_info
-                                    .local_base_path
-                                    .unwrap_or_else(|| pathstr)
-                                    .to_string()
+                                // let mut pathstr = lnkobj
+                                //     .link_info()
+                                //     .as_ref()
+                                //     .unwrap()
+                                //     .local_base_path()
+                                //     .as_ref()
+                                //     .unwrap()
+                                //     .clone();
+                                // // println!("{pathstr}");
+                                // let s = "".to_string();
+                                // let mut r_p_s = lnkobj
+                                //     .relative_path()
+                                //     .as_ref()
+                                //     .unwrap_or_else(|| &s)
+                                //     .clone();
+                                // // println!("{r_p_s}");
+                                // if let Some(a) = r_p_s.rfind("\\") {
+                                //     r_p_s.replace_range(..a, "");
+                                // };
+                                // if let Some(b) = pathstr.rfind("\\") {
+                                //     pathstr.truncate(b);
+                                //     pathstr.push_str(&r_p_s);
+                                // };
+                                // somelnk
+                                //     .link_info
+                                //     .local_base_path
+                                //     .unwrap_or_else(|| pathstr)
+                                //     .to_string()
                             }
                         };
                         lnk_files.push(LnkData { file_path, icon });
@@ -904,7 +904,6 @@ pub async fn search_in_dir(
         }
     });
     let mut files = Vec::new();
-    println!("{}", glob_pattern);
     let glob_result = glob_with(&glob_pattern, glob_option).unwrap();
 
     for entry in glob_result {
@@ -914,7 +913,6 @@ pub async fn search_in_dir(
                     files.push(get_file_properties(path.to_str().unwrap()).await.unwrap());
                     if files.len() % 100 == 0 {
                         window.emit("search_partial_result", files.clone()).unwrap();
-
                         files.clear();
                     }
                 }
@@ -925,7 +923,6 @@ pub async fn search_in_dir(
         }
     }
     window.unlisten(id);
-
     files
 }
 

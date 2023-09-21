@@ -37,7 +37,7 @@ const processSearch = async (to_search: string, search_in: string): Promise<void
 	const finalResult = await new DirectoryAPI(search_in).search(to_search, async (partialFound) => {
 		let _el = document.createElement('div') as HTMLElement;
 		foundSomething = true;
-		console.log('partialFound' + partialFound.length);
+		// console.log('partialFound' + partialFound.length);
 		if (document.querySelector<HTMLInputElement>('.path-navigator').value.startsWith('Search: '))
 			_el = await displayFiles(partialFound, search_path, _el, null, true);
 		for (const childEl of _el.children) {
@@ -46,7 +46,7 @@ const processSearch = async (to_search: string, search_in: string): Promise<void
 		updateNumber();
 	});
 	const _el = document.createElement('div');
-	console.log('finalResult' + finalResult.length);
+	// console.log('finalResult' + finalResult.length);
 	MAIN_ELEMENT.appendChild(await displayFiles(finalResult, search_path, _el, null, true));
 	updateNumber();
 	if (!finalResult.length && !foundSomething) {

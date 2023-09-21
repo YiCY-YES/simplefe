@@ -11,8 +11,11 @@ const joinPath = (...args: string[]): string => {
 		if (arg.length > 0) {
 			if (joined === undefined) joined = arg;
 			else {
-				if (!(joined?.endsWith('/') || joined?.endsWith('\\')))
-					joined += '/';
+				if (!(joined?.endsWith('/') || joined?.endsWith('\\'))) {
+					if (args[0].endsWith('\\')) {
+						joined += '\\';
+					} else joined += '/';
+				}
 				joined += arg;
 			}
 		}

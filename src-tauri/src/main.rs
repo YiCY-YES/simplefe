@@ -8,8 +8,8 @@ mod extensions;
 mod file_lib;
 mod files_api;
 mod storage;
-mod utils;
 mod tests;
+mod utils;
 use clap::{Arg, ArgMatches, Command as ClapCommand};
 use font_loader::system_fonts;
 use lazy_static::lazy_static;
@@ -119,9 +119,9 @@ lazy_static! {
     pub(crate) static ref FILEPATH: Arc<Mutex<String>> = Arc::new(Mutex::new(String::from("")));
 }
 #[derive(serde::Serialize, Debug)]
-struct PreviewStc{
-    s:String,
-    p:String,
+struct PreviewStc {
+    s: String,
+    p: String,
 }
 
 #[tauri::command]
@@ -130,7 +130,6 @@ async fn set_preview(s: String, p: String) -> Result<bool, String> {
     *HTMLDATA.lock().await = s;
     *FILEPATH.lock().await = p;
     *NEEDPREVIEW.lock().await = true;
-    // let _ = timeout(Duration::from_secs(10), no_preview()).await;
     Ok(*NEEDPREVIEW.lock().await)
 }
 // async fn no_preview() {
@@ -145,12 +144,11 @@ async fn ask_preview() -> Result<PreviewStc, String> {
         let pc = FILEPATH.lock().await.clone();
         *FILEPATH.lock().await = String::from("");
         *HTMLDATA.lock().await = String::from("");
-
         *NEEDPREVIEW.lock().await = false;
         // println!("{sc}{pc}");
         Ok(PreviewStc { s: (sc), p: (pc) })
     } else {
-        Err(String::from("nothing"))
+        Err(String::from("nothing in preview"))
     }
 }
 
