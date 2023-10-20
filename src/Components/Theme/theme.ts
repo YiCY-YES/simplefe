@@ -107,6 +107,7 @@ const CATEGORIES = [
 	'prompt',
 	'preview',
 	'properties',
+    'tokei',
 ];
 
 /**

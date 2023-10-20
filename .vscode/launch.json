@@ -7,7 +7,7 @@
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "Launch Xplorer Development",
+			"name": "Launch  Development",
 			"runtimeExecutable": "yarn",
 			"cwd": "${workspaceFolder}",
 			"runtimeArgs": ["dev"],

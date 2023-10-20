@@ -30,20 +30,20 @@ use window_vibrancy::{apply_acrylic, apply_blur, clear_acrylic, clear_blur};
 lazy_static! {
     pub static ref ARGS_STRUCT: ArgMatches = {
         const VERSION: &str = env!("CARGO_PKG_VERSION");
-        ClapCommand::new("Xplorer")
+        ClapCommand::new("simplefe")
             .version(VERSION)
-            .about("Xplorer, customizable, modern file manager")
+            .about("simplefe, customizable, modern file manager")
             .arg(
                 Arg::new("reveal")
                     .short('r')
                     .long("reveal")
-                    .help("Reveal file in Xplorer")
+                    .help("Reveal file in simplefe")
                     .takes_value(false),
             )
             .subcommand(
                 ClapCommand::new("extensions")
                     .alias("ext")
-                    .about("Manage Xplorer extensions")
+                    .about("Manage simplefe extensions")
                     .subcommand(
                         ClapCommand::new("theme")
                             .about("Manage themes")
@@ -98,7 +98,7 @@ lazy_static! {
             )
             .arg(
                 Arg::new("dir")
-                    .help("Directories to open in Xplorer")
+                    .help("Directories to open in simplefe")
                     .multiple_values(true)
                     .takes_value(true),
             )

@@ -103,8 +103,7 @@ pub struct Detail {
     pub lines: usize,
     pub children: Vec<InnerReport>,
 }
-#[derive(Debug)]
-#[derive(serde::Serialize, Default)]
+#[derive(Debug, serde::Serialize, Default)]
 pub struct InnerReport {
     pub language_type: String,
     pub blanks: usize,
@@ -824,7 +823,7 @@ pub async fn listen_dir(dir: String, window: tauri::Window) -> Result<String, St
 #[cfg(target_os = "windows")]
 #[tauri::command]
 pub async fn extract_icon(file_path: &str) -> Result<String, String> {
-    let storage_dir = Path::new(&local_data_dir().unwrap()).join("Xplorer/cache");
+    let storage_dir = Path::new(&local_data_dir().unwrap()).join("simplefe/cache");
     fs::create_dir_all(&storage_dir).unwrap();
     let basename = FileSystemUtils::get_basename(file_path);
     let icon_path = storage_dir.join(basename + ".png");
@@ -894,7 +893,7 @@ pub async fn search_in_dir(
     let glob_option = MatchOptions {
         case_sensitive: true,
         require_literal_separator: false,
-        require_literal_leading_dot: false
+        require_literal_leading_dot: false,
     };
     let continue_search = std::sync::Arc::new(std::sync::Mutex::new(true));
     let id = window.listen("unsearch", {
